@@ -1,47 +1,68 @@
 #include <iostream>
 #include <vector>
 #include <cmath>
-#include <string>
-#include <map>
-#include <utility>
+#include <tuple>
 
 
-constexpr double DELTA_0 = 5.0;
-
+constexpr double delta_0 = 5.0;
+constexpr double binary_IF_penalty = 0.37; // Penalty for boolean IFs
+constexpr double phi = 3.0; // Stoichiometric ratio
 
 // edit mu_actual_fixed_IF_list and mu_actual_test_time_IF_list with the experiment data
 
+
+// Fixed IFs: 1-6,10-13
 struct FixedIFs
 {
-    double driver_length;
-    double driven_length;
-    double driven_inner_diameter;
-    bool tailoring;
-    bool inserts;
-    bool crv;
-    bool dilution;
-    bool impurities;
-    double measurement_location; // Measurement location in cm
-    bool fuel_air_ratio;
+    double driver_length_m;             // Driver length [m]
+    double driven_length_m;             // Driven length [m]
+    double driven_inner_diameter_cm;    // Driven inner diameter [cm]  
+    bool tailoring;                     // Tailoring
+    bool inserts;                       // Inserts
+    bool crv;                           // CRV
+    bool dilution;                      // Dilution
+    bool impurities;                    // Impurities
+    double measurement_location_cm;     // Measurement location [cm]    
+    bool fuel_air_ratio;                // Fuel-air ratio exceeding 0.3
+};
+
+// Test Time IFs: 7-9
+struct TestTimeIFs {
+    double test_time;                   // Exp. data in microseconds
+    double T5;                          // Temperature in Kelvin
+    double P5;                          // Pressure in atm
+};
+
+
+FixedIFs mu_ideal_fixed_IFs = {
+    3.0,                                // Driver length [m]
+    8.0,                                // Driven length [m]
+    10.0,                               // Driven inner diameter [cm]
+    true,                               // Tailoring
+    true,                               // Inserts
+    true,                               // CRV
+    true,                               // Dilution
+    false,                              // Impurities
+    2.0,                                // Measurement location [cm]
+    true                                // Fuel-air ratio exceeding 0.3
 };
 
 FixedIFs mu_actual_fixed_IFs = {
-    2.74,                // Driver length [m]
-    2.74 + 0.9144,      // Driven length [m]
-    5.08,                // Driven inner diameter [cm]
-    true,                // Tailoring
-    true,                // Inserts
-    false,               // CRV
-    true,                // Dilution
-    false,                // Impurities
-    2.0,                 // Measurement location [cm]
-    true                 // Fuel-air ratio exceeding 0.3
+    2.74,                               // Driver length [m]
+    2.74 + 0.9144,                      // Driven length [m]
+    5.08,                               // Driven inner diameter [cm]
+    true,                               // Tailoring
+    true,                               // Inserts
+    false,                              // CRV
+    true,                               // Dilution
+    false,                              // Impurities
+    2.0,                                // Measurement location [cm]
+    true                                // Fuel-air ratio exceeding 0.3
 };
 
-struct TestTimeIFs {
-    double test_time;  // Exp. data in microseconds
-    double T5;     // Temperature in Kelvin
-    double P5;   // Pressure in atm
+std::vector<TestTimeIFs> mu_ideal_test_time_IF_list = {
+    {50.0, 1000.0, 5.0 },
+    {500.0, 1600.0, 20.0}
 };
 
 std::vector<TestTimeIFs> mu_actual_test_time_IF_list = {
@@ -72,61 +93,40 @@ std::vector<TestTimeIFs> mu_actual_test_time_IF_list = {
 };
 
 
-
-FixedIFs mu_ideal_fixed_IFs = {
-    3.0,                // Driver length [m]
-    8.0,                // Driven length [m]
-    10.0,               // Driven inner diameter [cm]
-    true,               // Tailoring
-    true,               // Inserts
-    true,              // CRV
-    true,               // Dilution
-    false,               // Impurities
-    2.0,                // Measurement location [cm]
-    true                // Fuel-air ratio exceeding 0.3
-};
-
-
-std::vector<TestTimeIFs> mu_ideal_test_time_IF_list = {
-    {50.0, 1000.0, 5.0 },
-    {500.0, 1600.0, 20.0}
-};
-
-
-double harringtonFunction(double mu_ideal, double mu_actual) {
+double harrington_desirability(double mu_ideal, double mu_actual) {
     double x_i = (mu_ideal - mu_actual) / mu_ideal;
     double xi = 1.0 - std::exp(-(x_i * x_i));
-    double delta_i = DELTA_0 * xi;
+    double delta_i = delta_0 * xi;
     return delta_i;
 }
 
-double harringtonFunctionBool(bool mu_ideal, bool mu_actual) {
-    double xi = (mu_ideal == mu_actual) ? 0.0 : 0.37;
-    double delta_i = DELTA_0 * xi;
+double harrington_desirability_bool(bool mu_ideal, bool mu_actual) {
+    double xi = (mu_ideal == mu_actual) ? 0.0 : binary_IF_penalty;
+    double delta_i = delta_0 * xi;
     return delta_i;
 }
 
 
-double calcTotalFixedHarrington(const FixedIFs& mu_ideal, const FixedIFs& mu_actual) {
+double calc_total_fixed_harrington(const FixedIFs& mu_ideal, const FixedIFs& mu_actual) {
     double total = 0.0;
 
-    total += harringtonFunction(mu_ideal.driver_length, mu_actual.driver_length);
-    total += harringtonFunction(mu_ideal.driven_length, mu_actual.driven_length);
-    total += harringtonFunction(mu_ideal.driven_inner_diameter, mu_actual.driven_inner_diameter);
-    total += harringtonFunction(mu_ideal.measurement_location, mu_actual.measurement_location);
-    total += harringtonFunctionBool(mu_ideal.tailoring, mu_actual.tailoring);
-    total += harringtonFunctionBool(mu_ideal.inserts, mu_actual.inserts);
-    total += harringtonFunctionBool(mu_ideal.crv, mu_actual.crv);
-    total += harringtonFunctionBool(mu_ideal.dilution, mu_actual.dilution);
-    total += harringtonFunctionBool(mu_ideal.impurities, mu_actual.impurities);
-    total += harringtonFunctionBool(mu_ideal.fuel_air_ratio, mu_actual.fuel_air_ratio);
+    total += harrington_desirability(mu_ideal.driver_length_m, mu_actual.driver_length_m);
+    total += harrington_desirability(mu_ideal.driven_length_m, mu_actual.driven_length_m);
+    total += harrington_desirability(mu_ideal.driven_inner_diameter_cm, mu_actual.driven_inner_diameter_cm);
+    total += harrington_desirability(mu_ideal.measurement_location_cm, mu_actual.measurement_location_cm);
+    total += harrington_desirability_bool(mu_ideal.tailoring, mu_actual.tailoring);
+    total += harrington_desirability_bool(mu_ideal.inserts, mu_actual.inserts);
+    total += harrington_desirability_bool(mu_ideal.crv, mu_actual.crv);
+    total += harrington_desirability_bool(mu_ideal.dilution, mu_actual.dilution);
+    total += harrington_desirability_bool(mu_ideal.impurities, mu_actual.impurities);
+    total += harrington_desirability_bool(mu_ideal.fuel_air_ratio, mu_actual.fuel_air_ratio);
 
     return total;
 }
 
-std::vector<double> calcSystemicUncertainties(const std::vector<TestTimeIFs>& test_list, const std::vector<TestTimeIFs>& ideal_bounds, double fixed_IF_error, double DELTA_0){
+std::vector<double> calc_systematic_uncertainties(const std::vector<TestTimeIFs>& test_list, const std::vector<TestTimeIFs>& ideal_bounds, double fixed_IF_error, double delta_0){
 
-    std::vector<double> systemic_uncertainties;
+    std::vector<double> systematic_uncertainties;
 
     double lower_bound = ideal_bounds.front().test_time;
     double upper_bound = ideal_bounds.back().test_time;
@@ -136,19 +136,18 @@ std::vector<double> calcSystemicUncertainties(const std::vector<TestTimeIFs>& te
         double delta_val = 0.0;
 
         if (mu_actual < lower_bound) {
-            delta_val = harringtonFunction(lower_bound, mu_actual);
+            delta_val = harrington_desirability(lower_bound, mu_actual);
         }
         else if (mu_actual > upper_bound) {
-            delta_val = harringtonFunction(upper_bound, mu_actual);
+            delta_val = harrington_desirability(upper_bound, mu_actual);
         }
     
-        
-        double systematic_error = delta_val + fixed_IF_error + DELTA_0;
-        double systematic_uncertainty = std::pow((entry.test_time * systematic_error / 100.0), 2)/4;
-        systemic_uncertainties.push_back(systematic_uncertainty);
+        double systematic_error = delta_val + fixed_IF_error + delta_0;
+        double systematic_uncertainty = std::pow((entry.test_time * systematic_error / 100.0 / 2.0), 2);
+        systematic_uncertainties.push_back(systematic_uncertainty);
     }
 
-    return systemic_uncertainties;
+    return systematic_uncertainties;
 }
 
 
@@ -156,11 +155,11 @@ std::vector<double> calcSystemicUncertainties(const std::vector<TestTimeIFs>& te
 
 // Random uncertainty calculations
 struct Experiment {
-    double T;       // Temperature (K)
-    double P;       // Pressure (atm)
+    double T5;       // Temperature (K)
+    double P5;       // Pressure (atm)
     double phi;     // Stoichiometric ratio
-    double uT;      // Uncertainty percentage of T
-    double uP;      // Uncertainty percentage of P
+    double uT5;      // Uncertainty percentage of T
+    double uP5;      // Uncertainty percentage of P
     double uphi;    // Uncertainty percentage of phi
 };
 
@@ -172,13 +171,13 @@ struct FitParams {
 
 
 // Function to calculate u_c^2(y)
-double calcUTau(const Experiment& exp, const FitParams& params) {
-    double x1 = exp.T;
-    double x2 = exp.P;
+double calc_u_tau(const Experiment& exp, const FitParams& params) {
+    double x1 = exp.T5;
+    double x2 = exp.P5;
     double x3 = exp.phi;
 
-    double u1 = exp.uT;
-    double u2 = exp.uP;
+    double u1 = exp.uT5;
+    double u2 = exp.uP5;
     double u3 = exp.uphi;
 
     double A = params.A;
@@ -203,74 +202,81 @@ double calcUTau(const Experiment& exp, const FitParams& params) {
     double usqr_xC = (U_C/2) * (U_C/2);
     double usqr_xD = (U_D/2) * (U_D/2);
 
-    double expTerm = std::exp(B / x1);
-    double baseTerm = expTerm * std::pow(x2, C) * std::pow(x3, D);
+    double exp_term = std::exp(B / x1);
+    double base_term = exp_term * std::pow(x2, C) * std::pow(x3, D);
 
-    double q1 = std::pow(A * baseTerm * (-B / (x1 * x1)), 2) * usqr_x1;
-    double q2 = std::pow(C * A * expTerm * std::pow(x2, C - 1) * std::pow(x3, D), 2) * usqr_x2;
-    double q3 = std::pow(D * A * expTerm * std::pow(x2, C) * std::pow(x3, D - 1), 2) * usqr_x3;
-    double q4 = std::pow(expTerm * std::pow(x2, C) * std::pow(x3, D), 2) * usqr_xA;
-    double q5 = std::pow((1.0 / x1) * A * expTerm * std::pow(x2, C) * std::pow(x3, D), 2) * usqr_xB;
-    double q6 = std::pow(A * expTerm * std::pow(x2, C) * std::pow(x3, D) * std::log(x2), 2) * usqr_xC;
-    double q7 = std::pow(A * expTerm * std::pow(x2, C) * std::pow(x3, D) * std::log(x3), 2) * usqr_xD;
+    double q1 = std::pow(A * base_term * (-B / (x1 * x1)), 2) * usqr_x1;
+    double q2 = std::pow(C * A * exp_term * std::pow(x2, C - 1) * std::pow(x3, D), 2) * usqr_x2;
+    double q3 = std::pow(D * A * exp_term * std::pow(x2, C) * std::pow(x3, D - 1), 2) * usqr_x3;
+    double q4 = std::pow(exp_term * std::pow(x2, C) * std::pow(x3, D), 2) * usqr_xA;
+    double q5 = std::pow((1.0 / x1) * A * exp_term * std::pow(x2, C) * std::pow(x3, D), 2) * usqr_xB;
+    double q6 = std::pow(A * exp_term * std::pow(x2, C) * std::pow(x3, D) * std::log(x2), 2) * usqr_xC;
+    double q7 = std::pow(A * exp_term * std::pow(x2, C) * std::pow(x3, D) * std::log(x3), 2) * usqr_xD;
 
     return q1 + q2 + q3 + q4 + q5 + q6 + q7;
 }
 
 
-std::vector<double> calcRandomUncertainties(const std::vector<TestTimeIFs>& test_list){
+std::vector<double> calc_random_uncertainties(const std::vector<TestTimeIFs>& test_list){
 
     std::vector<double> random_uncertainties;
 
 
     for (const auto& entry : test_list) {
 
-        Experiment exp = {entry.T5, entry.P5, 3.0, 0.01, 0.015, 0.005}; // T,P,phi,uT,uP,uphi  
-        FitParams fp  = { 0.0075, 16400.0, 1.91, -3.4, 0.000046, 86.0, 0.071, 0.052 };
+        Experiment exp = {entry.T5, entry.P5, phi, 0.01, 0.015, 0.005}; // T,P,phi,uT,uP,uphi  
+        FitParams fp  = {0.0075, 16400.0, 1.91, -3.4, 0.000046, 86.0, 0.071, 0.052 };
 
-        double uTau = calcUTau(exp, fp);
-        random_uncertainties.push_back(uTau);
+        double u_tau = calc_u_tau(exp, fp);
+        random_uncertainties.push_back(u_tau);
     }
 
     return random_uncertainties;
 }
 
+struct UncertaintyQuantification {
+    std::vector<double> systematic_uncertainty;
+    std::vector<double> random_uncertainty;
+    std::vector<double> combined_uncertainty;
+    std::vector<double> final_extended_uncertainty;
+    std::vector<double> percent_uncertainty;
+};
 
-std::tuple<std::vector<double>, std::vector<double>, std::vector<double>> calcTotalUncertainties(const std::vector<TestTimeIFs>& test_list, const std::vector<double> systemic, const std::vector<double> random){
-    std::vector<double> total_errors(systemic.size());
-    std::vector<double> total_uncertainties(systemic.size());
-    std::vector<double> percent_uncertainties(systemic.size());
-    for (size_t i = 0; i < systemic.size(); ++i) {
-        total_errors[i] = systemic[i] + random[i];
-        total_uncertainties[i] = std::sqrt(total_errors[i]) * 2;
-        percent_uncertainties[i] = total_uncertainties[i] / test_list[i].test_time;
+std::tuple<std::vector<double>, std::vector<double>, std::vector<double>> calc_final_extended_uncertainties(const std::vector<TestTimeIFs>& test_list, const std::vector<double>& systematic, const std::vector<double>& random){
+    std::vector<double> combined_uncertainties(systematic.size());
+    std::vector<double> final_extended_uncertainties(systematic.size());
+    std::vector<double> percent_uncertainties(systematic.size());
+    for (size_t i = 0; i < systematic.size(); ++i) {
+        combined_uncertainties[i] = systematic[i] + random[i];
+        final_extended_uncertainties[i] = std::sqrt(combined_uncertainties[i]) * 2;
+        percent_uncertainties[i] = final_extended_uncertainties[i] / test_list[i].test_time * 100.0;
     }
-    return {total_errors, total_uncertainties, percent_uncertainties};
+    return {combined_uncertainties, final_extended_uncertainties, percent_uncertainties};
 }
 
 
 int main()
 {
-    double fixed_IF_error = calcTotalFixedHarrington(mu_ideal_fixed_IFs, mu_actual_fixed_IFs);
+    double fixed_IF_error = calc_total_fixed_harrington(mu_ideal_fixed_IFs, mu_actual_fixed_IFs);
     std::cout << "Total Harrington Delta (Fixed IFs): " << fixed_IF_error << std::endl;
-    std::vector<double> systemic_errors = calcSystemicUncertainties(mu_actual_test_time_IF_list, mu_ideal_test_time_IF_list, fixed_IF_error, DELTA_0);
-    std::cout << "\nSystemic Errors for each test time:\n";
-    for (size_t i = 0; i < systemic_errors.size(); ++i) {
+    std::vector<double> systematic_uncertainties = calc_systematic_uncertainties(mu_actual_test_time_IF_list, mu_ideal_test_time_IF_list, fixed_IF_error, delta_0);
+    std::cout << "\nsystematic Errors for each test time:\n";
+    for (size_t i = 0; i < systematic_uncertainties.size(); ++i) {
         std::cout << "Test time: " << mu_actual_test_time_IF_list[i].test_time
-                  << " -> Systemic Uncertainties: " << systemic_errors[i] << "\n";
+                  << " -> systematic Uncertainties: " << systematic_uncertainties[i] << "\n";
     }
-    std::vector<double> random_errors = calcRandomUncertainties(mu_actual_test_time_IF_list);
-    for (size_t i = 0; i < random_errors.size(); ++i) {
+    std::vector<double> random_uncertainties = calc_random_uncertainties(mu_actual_test_time_IF_list);
+    for (size_t i = 0; i < random_uncertainties.size(); ++i) {
         std::cout << "T5    : " << mu_actual_test_time_IF_list[i].T5
-                  << " -> Random Uncertainties: " << random_errors[i] << "\n";
+                  << " -> Random Uncertainties: " << random_uncertainties[i] << "\n";
     }
-    auto [total_errors, total_uncertainties, percent_uncertainties] = calcTotalUncertainties(mu_actual_test_time_IF_list, systemic_errors, random_errors);
+    auto [combined_uncertainties, final_extended_uncertainties, percent_uncertainties] = calc_final_extended_uncertainties(mu_actual_test_time_IF_list, systematic_uncertainties, random_uncertainties);
     std::cout << "\nTotal Errors, Uncertainties, and Percent Uncertainties for each test time:\n";
-    for (size_t i = 0; i < total_errors.size(); ++i) {
+    for (size_t i = 0; i < combined_uncertainties.size(); ++i) {
         std::cout << "Test time: " << mu_actual_test_time_IF_list[i].test_time
-                  << " -> Total Errors: " << total_errors[i]
-                  << ", Total Uncertainties: " << total_uncertainties[i]
-                  << ", Percent Uncertainties: " << percent_uncertainties[i] * 100 << "%\n";
+                  << " -> Combined Uncertainties: " << combined_uncertainties[i]
+                  << ", Final Extended Uncertainties: " << final_extended_uncertainties[i]
+                  << ", Percent Uncertainties: " << percent_uncertainties[i] << "%\n";
     }
 
     return 0;
