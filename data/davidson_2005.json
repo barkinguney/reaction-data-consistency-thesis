@@ -1,0 +1,87 @@
+{
+  "FixedIFs": {
+    "driver_length_m": 3.0,
+    "driven_length_m": 5.0,
+    "driven_inner_diameter_cm": 5.0,
+    "tailoring": false,
+    "inserts": false,
+    "crv": false,
+    "dilution": true,
+    "impurities": false,
+    "measurement_location_cm": 1.0,
+    "fuel_air_ratio": true
+  },
+  "Experiments": [
+    {
+      "mixture": "iso-Octane/air",
+      "phi": 1.0,
+      "TestTimeIFsList": [
+        { "test_time": 1511, "T5": 984, "P5": 18.1 },
+        { "test_time": 1535, "T5": 995, "P5": 16.3 },
+        { "test_time": 927, "T5": 1043, "P5": 17.1 },
+        { "test_time": 604, "T5": 1077, "P5": 18.4 },
+        { "test_time": 516, "T5": 1109, "P5": 15.9 },
+        { "test_time": 214, "T5": 1159, "P5": 14.9 },
+        { "test_time": 1719, "T5": 855, "P5": 56.4 },
+        { "test_time": 1755, "T5": 867, "P5": 59.3 },
+        { "test_time": 1193, "T5": 894, "P5": 58.5 },
+        { "test_time": 1067, "T5": 927, "P5": 55.7 },
+        { "test_time": 871, "T5": 975, "P5": 51.2 },
+        { "test_time": 625, "T5": 1006, "P5": 51.1 },
+        { "test_time": 505, "T5": 1015, "P5": 47.8 },
+        { "test_time": 222, "T5": 1098, "P5": 47.5 }
+      ]
+    },
+    {
+      "mixture": "iso-Octane/air",
+      "phi": 0.5,
+      "TestTimeIFsList": [
+        { "test_time": 1747, "T5": 1043, "P5": 15.0 },
+        { "test_time": 1222, "T5": 1071, "P5": 14.9 },
+        { "test_time": 916, "T5": 1095, "P5": 14.4 },
+        { "test_time": 329, "T5": 1171, "P5": 13.5 },
+        { "test_time": 1075, "T5": 1009, "P5": 51.1 },
+        { "test_time": 598, "T5": 1057, "P5": 51.0 },
+        { "test_time": 348, "T5": 1099, "P5": 48.6 },
+        { "test_time": 178, "T5": 1147, "P5": 47.8 }
+      ]
+    },
+    {
+      "mixture": "Toluene/air",
+      "phi": 1.0,
+      "TestTimeIFsList": [
+        { "test_time": 1314, "T5": 971, "P5": 17.2 },
+        { "test_time": 1100, "T5": 995, "P5": 16.5 },
+        { "test_time": 1288, "T5": 1053, "P5": 17.1 },
+        { "test_time": 1646, "T5": 1067, "P5": 16.1 },
+        { "test_time": 1174, "T5": 1076, "P5": 16.5 },
+        { "test_time": 1223, "T5": 1097, "P5": 16.6 },
+        { "test_time": 716, "T5": 1138, "P5": 22.2 },
+        { "test_time": 767, "T5": 1173, "P5": 14.9 },
+        { "test_time": 1173, "T5": 977, "P5": 54.3 },
+        { "test_time": 952, "T5": 990, "P5": 50.5 },
+        { "test_time": 870, "T5": 1005, "P5": 50.4 },
+        { "test_time": 605, "T5": 1068, "P5": 48.0 },
+        { "test_time": 397, "T5": 1111, "P5": 46.7 },
+        { "test_time": 276, "T5": 1166, "P5": 44.6 },
+        { "test_time": 273, "T5": 1179, "P5": 41.5 },
+        { "test_time": 191, "T5": 1183, "P5": 46.2 },
+        { "test_time": 121, "T5": 1242, "P5": 42.4 }
+      ]
+    },
+    {
+      "mixture": "Toluene/air",
+      "phi": 0.5,
+      "TestTimeIFsList": [
+        { "test_time": 1250, "T5": 1112, "P5": 15.3 },
+        { "test_time": 1454, "T5": 1125, "P5": 13.3 },
+        { "test_time": 598, "T5": 1206, "P5": 14.1 },
+        { "test_time": 279, "T5": 1269, "P5": 14.4 },
+        { "test_time": 1186, "T5": 1091, "P5": 50.5 },
+        { "test_time": 669, "T5": 1135, "P5": 46.5 },
+        { "test_time": 579, "T5": 1149, "P5": 44.4 },
+        { "test_time": 250, "T5": 1211, "P5": 44.4 }
+      ]
+    }
+  ]
+}

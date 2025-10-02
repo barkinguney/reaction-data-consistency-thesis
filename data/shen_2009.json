@@ -1,0 +1,40 @@
+{
+  "FixedIFs": {
+    "driver_length_m": 2.59,
+    "driven_length_m": 4.11,
+    "driven_inner_diameter_cm": 5.7,
+    "tailoring": false,
+    "inserts": false,
+    "crv": false,
+    "dilution": true,
+    "impurities": false,
+    "measurement_location_cm": 2.0,
+    "fuel_air_ratio": 1.0
+  },
+  "Experiments": [
+    {
+      "mixture": "Toluene-O2-N2",
+      "phi": 1.0,
+      "TestTimeIFsList": [
+        { "tau": 1380, "T5": 1129, "P5": 13.4 },
+        { "tau": 934,  "T5": 1164, "P5": 13.5 },
+        { "tau": 798,  "T5": 1197, "P5": 12.4 },
+        { "tau": 483,  "T5": 1235, "P5": 11.3 },
+        { "tau": 471,  "T5": 1239, "P5": 14.5 },
+        { "tau": 281,  "T5": 1290, "P5": 11.2 },
+        { "tau": 137,  "T5": 1371, "P5": 13.2 },
+        { "tau": 1255, "T5": 1021, "P5": 53.8 },
+        { "tau": 1203, "T5": 1041, "P5": 47.6 },
+        { "tau": 757,  "T5": 1082, "P5": 46.9 },
+        { "tau": 546,  "T5": 1085, "P5": 51.0 },
+        { "tau": 492,  "T5": 1116, "P5": 49.5 },
+        { "tau": 459,  "T5": 1117, "P5": 46.2 },
+        { "tau": 346,  "T5": 1135, "P5": 50.9 },
+        { "tau": 117,  "T5": 1218, "P5": 51.4 },
+        { "tau": 97,   "T5": 1232, "P5": 57.5 },
+        { "tau": 61,   "T5": 1256, "P5": 61.5 },
+        { "tau": 44,   "T5": 1305, "P5": 60.7 }
+      ]
+    }
+  ]
+}
