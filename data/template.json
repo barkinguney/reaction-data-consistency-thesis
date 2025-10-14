@@ -1,0 +1,65 @@
+{
+  "Metadata": {
+    "title": "Nadia's ethylene experiments at phi=3",
+    "author": "Baris Karakoc", 
+    "date": "2024-10-03",
+    "description": "Nadia's ethylene experiments at phi=3",
+    "DOI": "N/A"
+  },
+  "FixedIFs": {
+    "driver_length_m": 2.74,
+    "driven_length_m": 3.6544,
+    "driven_inner_diameter_cm": 5.08,
+    "tailoring": true,
+    "inserts": true,
+    "crv": false,
+    "dilution": true, // ask nadia if more than 90%
+    "impurities": false,
+    "measurement_location_cm": 2.0,
+    "fuel_air_ratio>0.3": true, // ask nadia, if we calculate
+    "T5_uncertainty_K": 0.01,
+    "P5_uncertainty_atm": 0.01,
+    "phi_uncertainty": 0.01
+  },
+
+  //ask nadia if ideal bounds for IFs should be hard coded 
+  // ask nadia if 95% confidence interval
+  "Experiment": 
+    {
+      "mixture": {
+        "C2H4": "3.5%",
+        "O2": "3.5%",
+        "Ar": "93%"
+      },
+      "phi": 3, // ask nadia if redundant
+      "TestTimeIFsList": [
+        { "IDT": 4400, "T5": 1094, "P5": 2.13 , "IDT_uncertainty":0.0},
+        { "IDT": 2100, "T5": 1106, "P5": 2.13 ,"IDT_uncertainty":0.0},
+        { "IDT": 1590, "T5": 1121, "P5": 2.13 , "IDT_uncertainty":0.0},
+        { "IDT": 1740, "T5": 1144, "P5": 2.63 },
+        { "IDT": 1020, "T5": 1174, "P5": 2.53 },
+        { "IDT": 857,  "T5": 1176, "P5": 2.13 },
+        { "IDT": 810,  "T5": 1200, "P5": 2.23 },
+        { "IDT": 760,  "T5": 1210, "P5": 2.23 },
+        { "IDT": 640,  "T5": 1221, "P5": 2.23 },
+        { "IDT": 605,  "T5": 1240, "P5": 2.53 },
+        { "IDT": 345,  "T5": 1269, "P5": 2.13 },
+        { "IDT": 282,  "T5": 1269, "P5": 2.13 },
+        { "IDT": 316,  "T5": 1276, "P5": 2.13 },
+        { "IDT": 282,  "T5": 1314, "P5": 2.53 },
+        { "IDT": 107,  "T5": 1353, "P5": 2.03 },
+        { "IDT": 175,  "T5": 1368, "P5": 2.43 },
+        { "IDT": 67,   "T5": 1419, "P5": 2.13 },
+        { "IDT": 80,   "T5": 1419, "P5": 2.03 },
+        { "IDT": 67,   "T5": 1419, "P5": 1.93 },
+        { "IDT": 62,   "T5": 1433, "P5": 2.03 },
+        { "IDT": 67,   "T5": 1442, "P5": 2.03 },
+        { "IDT": 75,   "T5": 1467, "P5": 2.33 },
+        { "IDT": 37,   "T5": 1506, "P5": 2.13 },
+        { "IDT": 54,   "T5": 1539, "P5": 2.43 }
+      ]
+      
+    }
+}
+
+

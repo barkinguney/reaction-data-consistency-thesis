@@ -454,14 +454,14 @@ private:
 };
 
 int main() {
-    std::string filename = "nadia_exp"; 
+    std::string filename = "davidson_2005";
     UncertaintyQuantification uq(std::string(PROJECT_ROOT) + "/data/" + filename + ".json");
     
-    if (!uq.writeCSV(std::string(PROJECT_ROOT) + "/data/"+ filename + "newparams_UQ_results.csv")) {
+    if (!uq.writeCSV(std::string(PROJECT_ROOT) + "/data/"+ filename + "_UQ_results.csv")) {
         std::cerr << "CSV write failed.\n";
         return 1;
     }
-    std::cout << "Wrote " << filename << "newparams_UQ_results.csv\n";
+    std::cout << "Wrote " << filename << "_UQ_results.csv\n";
 }
 
 
