@@ -22,9 +22,9 @@
     {
       "mixture": "C2H4-O2-Ar",
       "phi": 3.0,
-      "T5_uncertainty": 0.01,
-      "P5_uncertainty": 0.015,
-      "phi_uncertainty": 0.005,
+        "T5_uncertainty": 0.01,
+        "P5_uncertainty": 0.015,
+        "phi_uncertainty": 0.005,
       "TestTimeIFsList": [
         { "IDT": 4400, "T5": 1094, "P5": 2.13 },
         { "IDT": 2100, "T5": 1106, "P5": 2.13 },
