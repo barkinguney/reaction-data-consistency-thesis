@@ -14,10 +14,9 @@
     "tailoring": true,
     "inserts": true,
     "crv": false,
-    "dilution": true, // get rid
+    "dilution": true,
     "impurities": false,
     "measurement_location_m": 0.020, // [m] not cm
-    // "fuel_air_ratio>0.3": true, // remove
     "T5_uncertainty_K": 0.01,
     "P5_uncertainty_atm": 0.01,
     "phi_uncertainty": 0.01

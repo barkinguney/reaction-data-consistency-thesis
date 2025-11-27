@@ -9,14 +9,13 @@
   "FixedIFs": {
     "driver_length_m": 2.59,
     "driven_length_m": 4.11,
-    "driven_inner_diameter_cm": 5.7,
+    "driven_inner_diameter_m": 0.057,
     "tailoring": false,
     "inserts": false,
     "crv": false,
     "dilution": true,
     "impurities": false,
-    "measurement_location_cm": 2.0,
-    "fuel_air_ratio": true
+    "measurement_location_m": 0.02
   },
   "Experiment":
     {
